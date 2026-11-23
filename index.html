@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vendas 2026 — B2B · B2C</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#0b0406}
+  .vx{--vx-bg:#0b0406;--vx-panel:#150709;--vx-panel2:#1e0a0e;--vx-line:#3d141b;--vx-fg:#f7ebed;--vx-muted:#b8969c;--vx-red:#e3142f;--vx-red2:#ff3b5c;--vx-pink:#ff8aa3;--vx-soft:#ffd6de;--vx-grid:rgba(255,110,130,.10);
+    background:radial-gradient(1100px 480px at 8% -12%,rgba(227,20,47,.26),transparent 62%),radial-gradient(800px 380px at 105% 0%,rgba(255,59,92,.12),transparent 60%),var(--vx-bg);
+    color:var(--vx-fg);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:clamp(16px,3vw,40px);min-height:100vh}
+  .vx-wrap{max-width:1320px;margin:0 auto}
+  .vx-eyebrow{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--vx-red2);margin:0 0 8px;font-weight:600}
+  .vx-title{margin:0;font-size:clamp(26px,4.4vw,44px);font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#ff2a45;text-shadow:0 0 18px rgba(255,30,60,.55),0 0 2px rgba(255,90,110,.9);line-height:1.1}
+  .vx-lede{max-width:80ch;color:var(--vx-muted);margin:14px 0 0;line-height:1.6;font-size:15px}
+  .vx-lede b{color:var(--vx-fg);font-weight:600;font-variant-numeric:tabular-nums}
+  .vx-tabs{display:flex;gap:4px;margin:26px 0 18px;flex-wrap:wrap;border-bottom:1px solid var(--vx-line)}
+  .vx-tab{appearance:none;background:transparent;border:0;border-bottom:2px solid transparent;color:var(--vx-muted);padding:10px 16px;font:inherit;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;margin-bottom:-1px}
+  .vx-tab:hover{color:var(--vx-fg)}
+  .vx-tab.is-on{color:#fff;border-bottom-color:var(--vx-red);text-shadow:0 0 10px rgba(255,40,70,.6)}
+  .vx-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+  .vx-card{background:linear-gradient(180deg,var(--vx-panel2),var(--vx-panel));border:1px solid var(--vx-line);border-radius:10px;padding:16px 18px;position:relative}
+  .vx-kpi{overflow:hidden}
+  .vx-kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--vx-red);box-shadow:0 0 12px var(--vx-red)}
+  .vx-label{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--vx-muted);margin:0 0 8px;font-weight:600}
+  .vx-big{font-size:clamp(21px,2.4vw,30px);font-weight:700;font-variant-numeric:tabular-nums;line-height:1.15;display:block}
+  .vx-sub{font-size:12px;color:var(--vx-muted);margin:8px 0 0}
+  .vx-sub b{color:var(--vx-pink);font-weight:600;font-variant-numeric:tabular-nums}
+  .vx-panel{margin-top:14px}
+  .vx-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+  .vx-h{margin:0;font-size:15px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+  .vx-hsub{margin:4px 0 0;font-size:12px;color:var(--vx-muted)}
+  .vx-seg{display:inline-flex;border:1px solid var(--vx-line);border-radius:999px;padding:3px;background:#0e0507;flex-wrap:wrap}
+  .vx-seg button{appearance:none;border:0;background:transparent;color:var(--vx-muted);font:inherit;font-size:12px;font-weight:600;padding:6px 13px;border-radius:999px;cursor:pointer}
+  .vx-seg button:hover{color:var(--vx-fg)}
+  .vx-seg button.is-on{background:var(--vx-red);color:#fff;box-shadow:0 0 14px rgba(227,20,47,.55)}
+  .vx-chart{position:relative;min-height:300px;width:100%}
+  .vx-chart svg{display:block;overflow:visible}
+  .vx-axis text{fill:var(--vx-muted);font-size:11px;font-family:inherit}
+  .vx-base{stroke:var(--vx-line)}
+  .vx-gridl line{stroke:var(--vx-grid)}
+  .vx-hl{fill:rgba(255,59,92,.08)}
+  .vx-vlab{fill:var(--vx-soft);font-size:10.5px;font-weight:600;font-family:inherit}
+  .vx-avg{stroke:var(--vx-soft);stroke-dasharray:4 4;opacity:.55}
+  .vx-avgl{fill:var(--vx-soft);font-size:11px;opacity:.85;font-family:inherit}
+  .vx-bars{filter:drop-shadow(0 0 6px rgba(227,20,47,.35))}
+  .vx-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--vx-muted);margin:0 0 6px;padding:0;list-style:none}
+  .vx-legend i,.vx-leg i,.vx-tip i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+  .vx-note{font-size:11.5px;color:var(--vx-muted);margin:10px 0 0}
+  .vx-tip{position:absolute;left:0;top:0;pointer-events:none;background:#12060a;border:1px solid #5c1c27;border-radius:8px;padding:10px 12px;font-size:12px;box-shadow:0 10px 28px rgba(0,0,0,.55);opacity:0;transition:opacity .12s;min-width:200px;z-index:5}
+  .vx-tip-h{font-weight:700;margin-bottom:6px;color:#fff}
+  .vx-tip-row{display:flex;justify-content:space-between;gap:16px;padding:2px 0;color:var(--vx-muted)}
+  .vx-tip-row b{color:var(--vx-fg);font-variant-numeric:tabular-nums;font-weight:600}
+  .vx-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,310px);gap:14px;margin-top:14px;align-items:start}
+  .vx-split>.vx-panel{margin-top:0}
+  @media (max-width:880px){.vx-split{grid-template-columns:minmax(0,1fr)}}
+  .vx-donuts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:18px;margin-top:14px}
+  .vx-donut{position:relative;display:flex;justify-content:center;min-height:170px}
+  .vx-dc-v{fill:#fff;font-size:17px;font-weight:700;font-family:inherit}
+  .vx-dc-l{fill:var(--vx-muted);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-family:inherit}
+  .vx-leg{list-style:none;margin:10px 0 0;padding:0;font-size:12.5px;color:var(--vx-muted)}
+  .vx-leg li{display:flex;justify-content:space-between;padding:3px 0}
+  .vx-leg b{color:var(--vx-fg);font-variant-numeric:tabular-nums}
+  .vx-tablewrap{overflow-x:auto}
+  .vx-table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+  .vx-table th,.vx-table td{padding:8px 10px;text-align:left;white-space:nowrap;border-bottom:1px solid rgba(255,90,110,.08)}
+  .vx-table thead th{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--vx-muted);font-weight:700;border-bottom:1px solid var(--vx-line)}
+  .vx-table .num{text-align:right}
+  .vx-table tbody tr:hover td{background-color:rgba(255,59,92,.06)}
+  .vx-table tr.is-partial td{color:var(--vx-muted)}
+  .vx-table tfoot th,.vx-table tfoot td{font-weight:700;color:#fff;border-top:1px solid var(--vx-line);border-bottom:0}
+  .vx-foot{margin:24px 0 0;font-size:11.5px;color:var(--vx-muted)}
+  @media print{.vx-tabs,.vx-seg{display:none}.vx-tabpanel{display:block!important}.vx-tabpanel+.vx-tabpanel{break-before:page}}
+</style>
+</head>
+<body>
+<div class="vx"><div class="vx-wrap">
+  <header>
+    <p class="vx-eyebrow">Painel comercial · 2026</p>
+    <h1 class="vx-title">Vendas 2026 — B2B · B2C</h1>
+    <p class="vx-lede">De janeiro a 23 de novembro, o consolidado soma <b data-k="Consolidado.receita.brl"></b> em <b data-k="Consolidado.vendas.int"></b> vendas. O B2B responde por <b data-k="B2B.share_receita.pct"></b> do faturamento e <b data-k="B2B.share_vendas.pct"></b> das vendas, com ticket médio de <b data-k="B2B.ticket.brl"></b>, contra <b data-k="B2C.ticket.brl"></b> no B2C.</p>
+  </header>
+
+  <div class="vx-tabs" role="tablist" aria-label="Segmento">
+    <button type="button" role="tab" class="vx-tab is-on" data-tab="consolidado" aria-selected="true">Consolidado</button>
+    <button type="button" role="tab" class="vx-tab" data-tab="b2c" aria-selected="false">B2C</button>
+    <button type="button" role="tab" class="vx-tab" data-tab="b2b" aria-selected="false">B2B</button>
+  </div>
+
+  <section class="vx-tabpanel" id="consolidado" role="tabpanel">
+    <div class="vx-kpis" data-kpis="Consolidado"></div>
+    <div class="vx-split">
+      <div class="vx-card vx-panel">
+        <div class="vx-head">
+          <div><h2 class="vx-h">Evolução mensal — B2B + B2C</h2><p class="vx-hsub">Passe o mouse ou toque num mês para ver o detalhe.</p></div>
+          <div class="vx-seg" data-seg="Consolidado"></div>
+        </div>
+        <ul class="vx-legend"><li><i style="background:var(--vx-red)"></i>B2C</li><li><i style="background:var(--vx-pink)"></i>B2B</li><li><i style="background:var(--vx-soft)"></i>Total (no ticket médio)</li></ul>
+        <div class="vx-chart" data-seg="Consolidado"></div>
+        <p class="vx-note">* Novembro parcial: 01 a 23/11/2026. Linha tracejada = média mensal do período (11 meses).</p>
+      </div>
+      <div class="vx-card vx-panel">
+        <h2 class="vx-h">Participação</h2>
+        <p class="vx-hsub">B2C × B2B no acumulado do ano</p>
+        <div class="vx-donuts">
+          <div><p class="vx-label">Faturamento</p><div class="vx-donut" data-k="receita"></div>
+            <ul class="vx-leg"><li><span><i style="background:var(--vx-red)"></i>B2C</span><b data-k="B2C.share_receita.pct"></b></li><li><span><i style="background:var(--vx-pink)"></i>B2B</span><b data-k="B2B.share_receita.pct"></b></li></ul></div>
+          <div><p class="vx-label">Vendas</p><div class="vx-donut" data-k="vendas"></div>
+            <ul class="vx-leg"><li><span><i style="background:var(--vx-red)"></i>B2C</span><b data-k="B2C.share_vendas.pct"></b></li><li><span><i style="background:var(--vx-pink)"></i>B2B</span><b data-k="B2B.share_vendas.pct"></b></li></ul></div>
+        </div>
+      </div>
+    </div>
+    <div class="vx-card vx-panel"><h2 class="vx-h" style="margin-bottom:10px">Mês a mês — consolidado</h2><div class="vx-tablewrap" data-table="Consolidado"></div></div>
+  </section>
+
+  <section class="vx-tabpanel" id="b2c" role="tabpanel" hidden>
+    <div class="vx-kpis" data-kpis="B2C"></div>
+    <div class="vx-card vx-panel">
+      <div class="vx-head">
+        <div><h2 class="vx-h">Evolução mensal — B2C</h2><p class="vx-hsub">Passe o mouse ou toque num mês para ver o detalhe.</p></div>
+        <div class="vx-seg" data-seg="B2C"></div>
+      </div>
+      <div class="vx-chart" data-seg="B2C"></div>
+      <p class="vx-note">* Novembro parcial: 01 a 23/11/2026. Linha tracejada = média mensal do período (11 meses).</p>
+    </div>
+    <div class="vx-card vx-panel"><h2 class="vx-h" style="margin-bottom:10px">Mês a mês — B2C</h2><div class="vx-tablewrap" data-table="B2C"></div></div>
+  </section>
+
+  <section class="vx-tabpanel" id="b2b" role="tabpanel" hidden>
+    <div class="vx-kpis" data-kpis="B2B"></div>
+    <div class="vx-card vx-panel">
+      <div class="vx-head">
+        <div><h2 class="vx-h">Evolução mensal — B2B</h2><p class="vx-hsub">Passe o mouse ou toque num mês para ver o detalhe.</p></div>
+        <div class="vx-seg" data-seg="B2B"></div>
+      </div>
+      <div class="vx-chart" data-seg="B2B"></div>
+      <p class="vx-note">* Novembro parcial: 01 a 23/11/2026. Linha tracejada = média mensal do período (11 meses).</p>
+    </div>
+    <div class="vx-card vx-panel"><h2 class="vx-h" style="margin-bottom:10px">Mês a mês — B2B</h2><div class="vx-tablewrap" data-table="B2B"></div></div>
+  </section>
+
+  <p class="vx-foot">Dados informados por segmento, de janeiro a 23/11/2026. Ticket médio = faturamento ÷ número de vendas.</p>
+</div></div>
+
+<script>
+// ---- Dados (fonte: vendas informadas por segmento, jan a 23/11/2026) ----
+const DADOS = [
+  {mes:"Jan", b2c_vendas:181, b2c_receita:30618.10, b2b_vendas:41, b2b_receita:40886.19},
+  {mes:"Fev", b2c_vendas:180, b2c_receita:25405.46, b2b_vendas:36, b2b_receita:12724.61},
+  {mes:"Mar", b2c_vendas:231, b2c_receita:31282.35, b2b_vendas:51, b2b_receita:41581.98},
+  {mes:"Abr", b2c_vendas:205, b2c_receita:25346.18, b2b_vendas:58, b2b_receita:57161.41},
+  {mes:"Mai", b2c_vendas:163, b2c_receita:30642.78, b2b_vendas:47, b2b_receita:34300.88},
+  {mes:"Jun", b2c_vendas:163, b2c_receita:21029.89, b2b_vendas:40, b2b_receita:15848.36},
+  {mes:"Jul", b2c_vendas:204, b2c_receita:27922.89, b2b_vendas:34, b2b_receita:22463.47},
+  {mes:"Ago", b2c_vendas:224, b2c_receita:32455.59, b2b_vendas:15, b2b_receita:10924.66},
+  {mes:"Set", b2c_vendas:145, b2c_receita:23464.29, b2b_vendas:42, b2b_receita:29918.94},
+  {mes:"Out", b2c_vendas:166, b2c_receita:28805.64, b2b_vendas:29, b2b_receita:24669.36},
+  {mes:"Nov", b2c_vendas:116, b2c_receita:28161.75, b2b_vendas:29, b2b_receita:16766.15}
+];
+
+const BRL = new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"});
+const INT = new Intl.NumberFormat("pt-BR",{maximumFractionDigits:0});
+const DEC1 = new Intl.NumberFormat("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1});
+const MES = {Jan:"Janeiro",Fev:"Fevereiro",Mar:"Março",Abr:"Abril",Mai:"Maio",Jun:"Junho",Jul:"Julho",Ago:"Agosto",Set:"Setembro",Out:"Outubro",Nov:"Novembro"};
+const short = v => Math.abs(v) >= 1000 ? DEC1.format(v/1000) + " mil" : INT.format(v);
+const fmt = (v,f) => f==="brl"?BRL.format(v):f==="int"?INT.format(v):f==="dec1"?DEC1.format(v):f==="pct"?DEC1.format(v)+"%":f==="mes"?(MES[v]||v):String(v);
+const r2 = x => Math.round(x*100)/100;
+const metric = {Consolidado:"receita", B2C:"receita", B2B:"receita"};
+
+// ---- Cálculos ----
+const MENSAL = DADOS.map(r => {
+  const tv = r.b2c_vendas + r.b2b_vendas, tr = r.b2c_receita + r.b2b_receita;
+  return {...r,
+    b2c_ticket: r2(r.b2c_receita/r.b2c_vendas), b2b_ticket: r2(r.b2b_receita/r.b2b_vendas),
+    total_vendas: tv, total_receita: r2(tr), total_ticket: r2(tr/tv)};
+});
+const n = MENSAL.length;
+function seg(nome, pre){
+  const v = d3.sum(MENSAL, r => r[pre+"_vendas"]), rec = d3.sum(MENSAL, r => r[pre+"_receita"]);
+  const best = d3.greatest(MENSAL, r => r[pre+"_receita"]);
+  return {segmento:nome, vendas:v, receita:r2(rec), ticket:r2(rec/v), media_receita:r2(rec/n), media_vendas:Math.round(v/n*10)/10, melhor_mes:best.mes, melhor_receita:best[pre+"_receita"]};
+}
+const TOT = {B2C: seg("B2C","b2c"), B2B: seg("B2B","b2b"), Consolidado: seg("Consolidado","total")};
+Object.values(TOT).forEach(o => {
+  o.share_receita = Math.round(o.receita/TOT.Consolidado.receita*1000)/10;
+  o.share_vendas = Math.round(o.vendas/TOT.Consolidado.vendas*1000)/10;
+});
+
+// ---- Números no texto ----
+document.querySelectorAll("b[data-k]").forEach(el => {
+  const [s,f,t] = el.dataset.k.split(".");
+  if (TOT[s]) el.textContent = fmt(TOT[s][f], t);
+});
+
+// ---- Cards de KPI ----
+const nomeSeg = {Consolidado:"", B2C:" B2C", B2B:" B2B"};
+document.querySelectorAll("[data-kpis]").forEach(box => {
+  const s = box.dataset.kpis, t = TOT[s], sf = nomeSeg[s];
+  const cards = [
+    [s==="Consolidado"?"Faturamento total":"Faturamento"+sf, fmt(t.receita,"brl"), "média de <b>"+fmt(t.media_receita,"brl")+"</b> por mês"],
+    ["Vendas"+sf, fmt(t.vendas,"int"), "média de <b>"+fmt(t.media_vendas,"dec1")+"</b> por mês"],
+    ["Ticket médio"+sf, fmt(t.ticket,"brl"), "faturamento ÷ vendas"],
+    ["Melhor mês"+sf, fmt(t.melhor_mes,"mes"), "faturou <b>"+fmt(t.melhor_receita,"brl")+"</b>"]
+  ];
+  box.innerHTML = cards.map(c => `<div class="vx-card vx-kpi"><p class="vx-label">${c[0]}</p><span class="vx-big">${c[1]}</span><p class="vx-sub">${c[2]}</p></div>`).join("");
+});
+
+// ---- Seletores de métrica ----
+document.querySelectorAll(".vx-seg").forEach(g => {
+  const s = g.dataset.seg;
+  [["receita","Faturamento"],["vendas","Vendas"],["ticket","Ticket médio"]].forEach(([k,l]) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.textContent = l; b.dataset.metric = k;
+    b.className = k === metric[s] ? "is-on" : "";
+    b.setAttribute("aria-pressed", k === metric[s]);
+    b.addEventListener("click", () => {
+      metric[s] = k;
+      g.querySelectorAll("button").forEach(x => { x.classList.toggle("is-on", x===b); x.setAttribute("aria-pressed", x===b); });
+      drawCharts();
+    });
+    g.appendChild(b);
+  });
+});
+
+// ---- Tabelas ----
+const COLS = {
+  Consolidado: [["mes","Mês"],["b2c_vendas","Vendas B2C","int"],["b2b_vendas","Vendas B2B","int"],["total_vendas","Vendas total","int"],["b2c_receita","Fat. B2C","brl"],["b2b_receita","Fat. B2B","brl"],["total_receita","Fat. total","brl",1],["total_ticket","Ticket médio","brl"]],
+  B2C: [["mes","Mês"],["b2c_vendas","Vendas","int"],["b2c_receita","Faturamento","brl",1],["b2c_ticket","Ticket médio","brl"]],
+  B2B: [["mes","Mês"],["b2b_vendas","Vendas","int"],["b2b_receita","Faturamento","brl",1],["b2b_ticket","Ticket médio","brl"]]
+};
+const FOOT = {
+  Consolidado: [["B2C","vendas","int"],["B2B","vendas","int"],["Consolidado","vendas","int"],["B2C","receita","brl"],["B2B","receita","brl"],["Consolidado","receita","brl"],["Consolidado","ticket","brl"]],
+  B2C: [["B2C","vendas","int"],["B2C","receita","brl"],["B2C","ticket","brl"]],
+  B2B: [["B2B","vendas","int"],["B2B","receita","brl"],["B2B","ticket","brl"]]
+};
+document.querySelectorAll("[data-table]").forEach(w => {
+  const s = w.dataset.table, cols = COLS[s];
+  const table = document.createElement("table"); table.className = "vx-table";
+  const th = cols.map(c => `<th${c[2]?' class="num"':''}>${c[1]}</th>`).join("");
+  const mx = {}; cols.forEach(c => { if (c[3]) mx[c[0]] = d3.max(MENSAL, r => r[c[0]]); });
+  const body = MENSAL.map(r => `<tr${r.mes==="Nov"?' class="is-partial"':''}>` + cols.map(c => {
+    if (c[0]==="mes") return `<td>${r.mes==="Nov"?"Nov*":r.mes}</td>`;
+    const p = mx[c[0]] ? Math.round(r[c[0]]/mx[c[0]]*100) : 0;
+    const st = p ? ` style="background-image:linear-gradient(90deg, rgba(227,20,47,.30) ${p}%, transparent ${p}%)"` : "";
+    return `<td class="num"${st}>${fmt(r[c[0]],c[2])}</td>`;
+  }).join("") + "</tr>").join("");
+  const foot = `<tr><th scope="row">Total</th>` + FOOT[s].map(f => `<td class="num">${fmt(TOT[f[0]][f[1]],f[2])}</td>`).join("") + "</tr>";
+  table.innerHTML = `<thead><tr>${th}</tr></thead><tbody>${body}</tbody><tfoot>${foot}</tfoot>`;
+  w.appendChild(table);
+});
+
+// ---- Tooltip helper ----
+function tipRow(t,label,value,color){
+  const r = document.createElement("div"); r.className = "vx-tip-row";
+  const a = document.createElement("span");
+  if (color){ const i = document.createElement("i"); i.style.background = color; a.appendChild(i); }
+  a.appendChild(document.createTextNode(label));
+  const b = document.createElement("b"); b.textContent = value;
+  r.append(a,b); t.appendChild(r);
+}
+
+// ---- Gráfico mensal ----
+function drawChart(el){
+  const s = el.dataset.seg, m0 = metric[s], rows = MENSAL;
+  const W = Math.max(280, el.clientWidth || 600), narrow = W < 560, H = narrow ? 270 : 340;
+  const pre = s==="B2C"?"b2c":s==="B2B"?"b2b":"total";
+  const nomeM = {receita:"faturamento",vendas:"vendas",ticket:"ticket médio"}[m0];
+  const fShort = m0==="vendas" ? v=>INT.format(v) : m0==="ticket" ? v=>"R$ "+INT.format(v) : v=>"R$ "+short(v);
+  const stacked = s==="Consolidado" && m0!=="ticket", lines = s==="Consolidado" && m0==="ticket";
+  const val = r => r[pre+"_"+m0];
+  const yMax = lines ? d3.max(rows, r => Math.max(r.b2c_ticket, r.b2b_ticket, r.total_ticket)) : d3.max(rows, val);
+  const m = {top: narrow?14:28, right:14, bottom:30, left:40};
+  const svg = d3.create("svg").attr("width",W).attr("height",H).attr("role","img")
+    .attr("aria-label",`Evolução mensal de ${nomeM} — ${s}, janeiro a 23 de novembro de 2026`);
+  const tip = document.createElement("div"); tip.className = "vx-tip";
+  el.replaceChildren(svg.node(), tip);
+  const y = d3.scaleLinear().domain([0, yMax*1.12]).nice().range([H-m.bottom, m.top]);
+  const nt = narrow ? 4 : 5;
+  const grid = svg.append("g").attr("class","vx-gridl");
+  const gy = svg.append("g").attr("class","vx-axis").call(d3.axisLeft(y).ticks(nt).tickFormat(fShort).tickSize(0));
+  gy.select(".domain").remove();
+  let mw = 0; gy.selectAll("text").each(function(){ mw = Math.max(mw, this.getComputedTextLength()); });
+  m.left = Math.ceil(mw) + 16; gy.attr("transform", `translate(${m.left-8},0)`);
+  grid.selectAll("line").data(y.ticks(nt)).join("line").attr("x1",m.left).attr("x2",W-m.right).attr("y1",t=>y(t)).attr("y2",t=>y(t));
+  const x = d3.scaleBand().domain(rows.map(r=>r.mes)).range([m.left, W-m.right]).padding(narrow?0.2:0.3);
+  const off = (x.step()-x.bandwidth())/2, cx = r => x(r.mes)+x.bandwidth()/2;
+  const hl = svg.append("rect").attr("class","vx-hl").attr("y",m.top-8).attr("height",H-m.bottom-m.top+8).attr("width",x.step()).attr("rx",4).style("opacity",0);
+  const gx = svg.append("g").attr("class","vx-axis").attr("transform",`translate(0,${H-m.bottom})`)
+    .call(d3.axisBottom(x).tickSize(0).tickPadding(10).tickFormat(t => t==="Nov"?"Nov*":t));
+  gx.select(".domain").attr("class","vx-base");
+  const gid = "vxg-"+s;
+  const lg = svg.append("defs").append("linearGradient").attr("id",gid).attr("x1",0).attr("x2",0).attr("y1",0).attr("y2",1);
+  lg.append("stop").attr("offset","0%").attr("stop-color","#ff3b5c");
+  lg.append("stop").attr("offset","100%").attr("stop-color","#7a0a1a");
+  let topOf = null;
+  if (stacked){
+    const cols = ["var(--vx-red)","var(--vx-pink)"];
+    const st = d3.stack().keys(["b2c_"+m0,"b2b_"+m0])(rows);
+    svg.append("g").attr("class","vx-bars").selectAll("g").data(st).join("g").style("fill",(d,i)=>cols[i])
+      .selectAll("rect").data(d=>d).join("rect")
+      .attr("x",p=>x(p.data.mes)).attr("width",x.bandwidth()).attr("y",p=>y(p[1])).attr("height",p=>Math.max(0,y(p[0])-y(p[1])))
+      .style("opacity",p=>p.data.mes==="Nov"?0.6:1);
+    topOf = r => r["total_"+m0];
+  } else if (lines){
+    [{k:"b2c_ticket",c:"var(--vx-red2)"},{k:"b2b_ticket",c:"var(--vx-pink)"},{k:"total_ticket",c:"var(--vx-soft)"}].forEach(sr => {
+      svg.append("path").attr("d", d3.line().x(cx).y(r=>y(r[sr.k]))(rows))
+        .style("fill","none").style("stroke",sr.c).style("stroke-width",2.2).style("filter","drop-shadow(0 0 4px rgba(255,59,92,.45))");
+      svg.append("g").selectAll("circle").data(rows).join("circle").attr("cx",cx).attr("cy",r=>y(r[sr.k])).attr("r",3.5)
+        .style("fill",sr.c).style("stroke","#0b0406").style("stroke-width",1.5);
+    });
+  } else {
+    svg.append("g").attr("class","vx-bars").selectAll("rect").data(rows).join("rect")
+      .attr("x",r=>x(r.mes)).attr("width",x.bandwidth()).attr("y",r=>y(val(r))).attr("height",r=>Math.max(0,y(0)-y(val(r))))
+      .attr("rx",3).style("fill",`url(#${gid})`).style("opacity",r=>r.mes==="Nov"?0.6:1);
+    topOf = val;
+  }
+  if (topOf){
+    const avg = d3.mean(rows, topOf);
+    svg.append("line").attr("class","vx-avg").attr("x1",m.left).attr("x2",W-m.right).attr("y1",y(avg)).attr("y2",y(avg));
+    const al = svg.append("text").attr("class","vx-avgl").attr("x",m.left+4).attr("y",y(avg)-6).text("média "+fShort(avg));
+    const ab = al.node().getBBox();
+    if (!narrow){
+      const vl = svg.append("g").selectAll("text").data(rows).join("text").attr("class","vx-vlab")
+        .attr("x",cx).attr("y",r=>y(topOf(r))-6).attr("text-anchor","middle")
+        .text(r => m0==="receita" ? short(topOf(r)) : INT.format(topOf(r)));
+      let mwl = 0; vl.each(function(){ mwl = Math.max(mwl, this.getComputedTextLength()); });
+      if (mwl > x.step()-4) vl.remove();
+      else vl.each(function(){ const b = this.getBBox();
+        if (b.x < ab.x+ab.width+2 && b.x+b.width > ab.x-2 && b.y < ab.y+ab.height+2 && b.y+b.height > ab.y-2) this.remove(); });
+    }
+  }
+  const show = (ev, r) => {
+    tip.replaceChildren();
+    const h = document.createElement("div"); h.className = "vx-tip-h";
+    h.textContent = MES[r.mes] + (r.mes==="Nov"?" (até 23/11)":"") + " de 2026"; tip.appendChild(h);
+    if (s==="Consolidado"){
+      tipRow(tip,"Faturamento B2C",BRL.format(r.b2c_receita),"var(--vx-red)");
+      tipRow(tip,"Faturamento B2B",BRL.format(r.b2b_receita),"var(--vx-pink)");
+      tipRow(tip,"Faturamento total",BRL.format(r.total_receita));
+      tipRow(tip,"Vendas B2C / B2B",INT.format(r.b2c_vendas)+" / "+INT.format(r.b2b_vendas));
+      tipRow(tip,"Vendas total",INT.format(r.total_vendas));
+      tipRow(tip,"Ticket B2C / B2B","R$ "+INT.format(r.b2c_ticket)+" / R$ "+INT.format(r.b2b_ticket));
+      tipRow(tip,"Ticket médio total",BRL.format(r.total_ticket));
+    } else {
+      tipRow(tip,"Faturamento",BRL.format(r[pre+"_receita"]));
+      tipRow(tip,"Vendas",INT.format(r[pre+"_vendas"]));
+      tipRow(tip,"Ticket médio",BRL.format(r[pre+"_ticket"]));
+    }
+    tip.style.opacity = 1;
+    const tw = tip.offsetWidth, c = cx(r);
+    let left = c + x.bandwidth()/2 + 10;
+    if (left + tw > W) left = c - x.bandwidth()/2 - 10 - tw;
+    tip.style.left = Math.max(4, Math.min(left, W-tw-4)) + "px";
+    tip.style.top = m.top + "px";
+    hl.attr("x", x(r.mes)-off).style("opacity",1);
+  };
+  svg.append("g").selectAll("rect").data(rows).join("rect")
+    .attr("x",r=>x(r.mes)-off).attr("width",x.step()).attr("y",m.top-8).attr("height",H-m.bottom-m.top+8)
+    .style("fill","transparent").style("cursor","pointer")
+    .on("pointerenter",show).on("pointermove",show)
+    .on("pointerleave",()=>{ tip.style.opacity = 0; hl.style("opacity",0); });
+}
+
+// ---- Roscas ----
+function drawDonut(el){
+  const k = el.dataset.k, parts = [TOT.B2C, TOT.B2B], tot = TOT.Consolidado;
+  const S = Math.max(130, Math.min(el.clientWidth || 180, 180)), R = S/2;
+  const svg = d3.create("svg").attr("viewBox",[-R,-R,S,S].join(" ")).attr("width",S).attr("height",S).attr("role","img")
+    .attr("aria-label",`Participação de B2C e B2B ${k==="receita"?"no faturamento":"nas vendas"} de 2026`);
+  const tip = document.createElement("div"); tip.className = "vx-tip";
+  el.replaceChildren(svg.node(), tip);
+  const col = {B2C:"var(--vx-red)", B2B:"var(--vx-pink)"};
+  const arcs = d3.pie().sort(null).value(r=>r[k])(parts);
+  const arc = d3.arc().innerRadius(R*0.68).outerRadius(R-3).cornerRadius(3).padAngle(0.02);
+  const mv = (ev,a) => {
+    tip.replaceChildren();
+    const h = document.createElement("div"); h.className = "vx-tip-h"; h.textContent = a.data.segmento; tip.appendChild(h);
+    tipRow(tip, k==="receita"?"Faturamento":"Vendas", k==="receita"?BRL.format(a.data.receita):INT.format(a.data.vendas), col[a.data.segmento]);
+    tipRow(tip, "Participação", DEC1.format(k==="receita"?a.data.share_receita:a.data.share_vendas)+"%");
+    tip.style.opacity = 1;
+    const b = el.getBoundingClientRect(), tw = tip.offsetWidth;
+    tip.style.left = Math.max(0, Math.min(ev.clientX-b.left+12, el.clientWidth-tw)) + "px";
+    tip.style.top = (ev.clientY-b.top+12) + "px";
+  };
+  svg.append("g").selectAll("path").data(arcs).join("path").attr("d",arc)
+    .style("fill",a=>col[a.data.segmento]).style("filter","drop-shadow(0 0 6px rgba(227,20,47,.45))").style("cursor","pointer")
+    .on("pointerenter",mv).on("pointermove",mv).on("pointerleave",()=>{ tip.style.opacity = 0; });
+  svg.append("text").attr("class","vx-dc-v").attr("text-anchor","middle").attr("dy","0.15em").text(k==="receita"?"R$ "+short(tot.receita):INT.format(tot.vendas));
+  svg.append("text").attr("class","vx-dc-l").attr("text-anchor","middle").attr("dy","1.7em").text(k==="receita"?"faturamento":"vendas");
+}
+
+function drawCharts(){
+  document.querySelectorAll(".vx-tabpanel:not([hidden]) .vx-chart").forEach(drawChart);
+  document.querySelectorAll(".vx-tabpanel:not([hidden]) .vx-donut").forEach(drawDonut);
+}
+
+// ---- Abas ----
+const tabs = [...document.querySelectorAll(".vx-tab")], panels = [...document.querySelectorAll(".vx-tabpanel")];
+function showTab(id, push){
+  panels.forEach(p => p.hidden = p.id !== id);
+  tabs.forEach(t => { const on = t.dataset.tab === id; t.classList.toggle("is-on",on); t.setAttribute("aria-selected",on); });
+  if (push) history.replaceState(null, "", "#"+id);
+  drawCharts();
+}
+tabs.forEach(t => t.addEventListener("click", () => showTab(t.dataset.tab, true)));
+const h0 = location.hash.slice(1);
+showTab(panels.some(p => p.id === h0) ? h0 : "consolidado", false);
+
+let rt; window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawCharts, 120); });
+window.addEventListener("beforeprint", () => { panels.forEach(p => p.hidden = false); drawCharts(); });
+window.addEventListener("afterprint", () => showTab(location.hash.slice(1) || "consolidado", false));
+</script>
+</body>
+</html>
