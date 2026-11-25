@@ -84,7 +84,7 @@
   <header>
     <p class="vx-eyebrow">Painel comercial · 2026</p>
     <h1 class="vx-title">Vendas 2026 — B2B · B2C</h1>
-    <p class="vx-lede">De janeiro a 23 de novembro, o consolidado soma <b data-k="Consolidado.receita.brl"></b> em <b data-k="Consolidado.vendas.int"></b> vendas. O B2B responde por <b data-k="B2B.share_receita.pct"></b> do faturamento e <b data-k="B2B.share_vendas.pct"></b> das vendas, com ticket médio de <b data-k="B2B.ticket.brl"></b>, contra <b data-k="B2C.ticket.brl"></b> no B2C.</p>
+    <p class="vx-lede">De janeiro a 25 de novembro, o consolidado soma <b data-k="Consolidado.receita.brl"></b> em <b data-k="Consolidado.vendas.int"></b> vendas. O B2B responde por <b data-k="B2B.share_receita.pct"></b> do faturamento e <b data-k="B2B.share_vendas.pct"></b> das vendas, com ticket médio de <b data-k="B2B.ticket.brl"></b>, contra <b data-k="B2C.ticket.brl"></b> no B2C.</p>
   </header>
 
   <div class="vx-tabs" role="tablist" aria-label="Segmento">
@@ -103,7 +103,7 @@
         </div>
         <ul class="vx-legend"><li><i style="background:var(--vx-red)"></i>B2C</li><li><i style="background:var(--vx-pink)"></i>B2B</li><li><i style="background:var(--vx-soft)"></i>Total (no ticket médio)</li></ul>
         <div class="vx-chart" data-seg="Consolidado"></div>
-        <p class="vx-note">* Novembro parcial: 01 a 23/11/2026. Linha tracejada = média mensal do período (11 meses).</p>
+        <p class="vx-note">* Novembro parcial: 01 a 25/11/2026. Linha tracejada = média mensal do período (11 meses).</p>
       </div>
       <div class="vx-card vx-panel">
         <h2 class="vx-h">Participação</h2>
@@ -127,7 +127,7 @@
         <div class="vx-seg" data-seg="B2C"></div>
       </div>
       <div class="vx-chart" data-seg="B2C"></div>
-      <p class="vx-note">* Novembro parcial: 01 a 23/11/2026. Linha tracejada = média mensal do período (11 meses).</p>
+      <p class="vx-note">* Novembro parcial: 01 a 25/11/2026. Linha tracejada = média mensal do período (11 meses).</p>
     </div>
     <div class="vx-card vx-panel"><h2 class="vx-h" style="margin-bottom:10px">Mês a mês — B2C</h2><div class="vx-tablewrap" data-table="B2C"></div></div>
   </section>
@@ -140,16 +140,16 @@
         <div class="vx-seg" data-seg="B2B"></div>
       </div>
       <div class="vx-chart" data-seg="B2B"></div>
-      <p class="vx-note">* Novembro parcial: 01 a 23/11/2026. Linha tracejada = média mensal do período (11 meses).</p>
+      <p class="vx-note">* Novembro parcial: 01 a 25/11/2026. Linha tracejada = média mensal do período (11 meses).</p>
     </div>
     <div class="vx-card vx-panel"><h2 class="vx-h" style="margin-bottom:10px">Mês a mês — B2B</h2><div class="vx-tablewrap" data-table="B2B"></div></div>
   </section>
 
-  <p class="vx-foot">Dados informados por segmento, de janeiro a 23/11/2026. Ticket médio = faturamento ÷ número de vendas.</p>
+  <p class="vx-foot">Dados informados por segmento, de janeiro a 25/11/2026. Ticket médio = faturamento ÷ número de vendas.</p>
 </div></div>
 
 <script>
-// ---- Dados (fonte: vendas informadas por segmento, jan a 23/11/2026) ----
+// ---- Dados (fonte: vendas informadas por segmento, jan a 25/11/2026) ----
 const DADOS = [
   {mes:"Jan", b2c_vendas:181, b2c_receita:30618.10, b2b_vendas:41, b2b_receita:40886.19},
   {mes:"Fev", b2c_vendas:180, b2c_receita:25405.46, b2b_vendas:36, b2b_receita:12724.61},
@@ -161,7 +161,7 @@ const DADOS = [
   {mes:"Ago", b2c_vendas:224, b2c_receita:32455.59, b2b_vendas:15, b2b_receita:10924.66},
   {mes:"Set", b2c_vendas:145, b2c_receita:23464.29, b2b_vendas:42, b2b_receita:29918.94},
   {mes:"Out", b2c_vendas:166, b2c_receita:28805.64, b2b_vendas:29, b2b_receita:24669.36},
-  {mes:"Nov", b2c_vendas:123, b2c_receita:29107.57, b2b_vendas:30, b2b_receita:17079.65}
+  {mes:"Nov", b2c_vendas:127, b2c_receita:29640.47, b2b_vendas:32, b2b_receita:17801.38}
 ];
 
 const BRL = new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"});
@@ -277,7 +277,7 @@ function drawChart(el){
   const yMax = lines ? d3.max(rows, r => Math.max(r.b2c_ticket, r.b2b_ticket, r.total_ticket)) : d3.max(rows, val);
   const m = {top: narrow?14:28, right:14, bottom:30, left:40};
   const svg = d3.create("svg").attr("width",W).attr("height",H).attr("role","img")
-    .attr("aria-label",`Evolução mensal de ${nomeM} — ${s}, janeiro a 23 de novembro de 2026`);
+    .attr("aria-label",`Evolução mensal de ${nomeM} — ${s}, janeiro a 25 de novembro de 2026`);
   const tip = document.createElement("div"); tip.className = "vx-tip";
   el.replaceChildren(svg.node(), tip);
   const y = d3.scaleLinear().domain([0, yMax*1.12]).nice().range([H-m.bottom, m.top]);
@@ -338,7 +338,7 @@ function drawChart(el){
   const show = (ev, r) => {
     tip.replaceChildren();
     const h = document.createElement("div"); h.className = "vx-tip-h";
-    h.textContent = MES[r.mes] + (r.mes==="Nov"?" (até 23/11)":"") + " de 2026"; tip.appendChild(h);
+    h.textContent = MES[r.mes] + (r.mes==="Nov"?" (até 25/11)":"") + " de 2026"; tip.appendChild(h);
     if (s==="Consolidado"){
       tipRow(tip,"Faturamento B2C",BRL.format(r.b2c_receita),"var(--vx-red)");
       tipRow(tip,"Faturamento B2B",BRL.format(r.b2b_receita),"var(--vx-pink)");
